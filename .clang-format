@@ -1,0 +1,15 @@
+# 基于 Google 风格，可修改
+BasedOnStyle: Google
+IndentWidth: 4       # 缩进 4 空格
+ColumnLimit: 100     # 一行最大长度
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: false
+DerivePointerAlignment: false
+PointerAlignment: Left
+
+# 大括号风格
+BreakBeforeBraces: Attach  # 改为 Attach，使 { 不单独一行
+
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+SpacesBeforeTrailingComments: 2

@@ -1,0 +1,4 @@
+[tool.black]
+line-length = 100
+target-version = ['py310']  # 指定 Python 3.8，可改 py39、py310
+skip-string-normalization = true  # 保持单引号/双引号不变

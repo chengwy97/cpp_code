@@ -1,0 +1,46 @@
+{
+    // 使用 clangd 作为 C/C++ 语言服务器
+    "C_Cpp.intelliSenseEngine": "Disabled", // 禁用 MS C/C++ IntelliSense
+    "clangd.path": "/usr/bin/clangd-18", // 根据实际 clangd 路径修改
+    "clangd.arguments": [
+        "--background-index", // 后台索引
+        "--clang-tidy", // 可选：启用 clang-tidy 检查
+        "--completion-style=detailed"
+    ],
+    "clangd.semanticHighlighting": true,
+    "clangd.onConfigChanged": "restart",
+    // 保存时自动格式化
+    "editor.formatOnSave": true,
+    // ===================== C++ / C =====================
+    "[cpp]": {
+        "editor.defaultFormatter": "xaver.clang-format"
+    },
+    "[c]": {
+        "editor.defaultFormatter": "xaver.clang-format"
+    },
+    "clang-format.executable": "/usr/bin/clang-format",
+    "C_Cpp.clang_format_fallbackStyle": "Google",
+    // ===================== Python =====================
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.python"
+    },
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": [
+        "--line-length",
+        "100"
+    ],
+    // ===================== CMake =====================
+    "[cmake]": {
+        "editor.defaultFormatter": "cheshirekow.cmake-format"
+    },
+    "cmakeFormat.executablePath": "/usr/bin/cmake-format",
+    // ===================== 文件处理 =====================
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false,
+    "editor.rulers": [
+        100
+    ],
+    "editor.wordWrap": "off"
+}

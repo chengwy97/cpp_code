@@ -7,6 +7,7 @@ message(STATUS "当前命名空间: ${NAMESPACE}")
 add_subdirectory(001.time.sync)
 add_subdirectory(002.time.async)
 add_subdirectory(003.time.bind_param)
+add_subdirectory(004.time.bind_member_function)
 
 
 
