@@ -39,27 +39,32 @@ boost::asio::awaitable<void> udp_async_server(boost::asio::io_context& io_contex
                 boost::asio::buffer(buf), sender_endpoint, boost::asio::use_awaitable);
 
             if (std::string(buf.begin(), buf.begin() + len) == "time flush") {
-                std::cout << "Index: " << index << " Time flush request received!" << std::endl;
+                // std::cout << "Thread ID: " << std::this_thread::get_id() << " Index: " << index
+                //           << " Time flush request received!" << std::endl;
                 std::string response = "Time flush response!";
                 co_await socket.async_send_to(boost::asio::buffer(response), sender_endpoint,
                                               boost::asio::use_awaitable);
-                std::cout << "Index: " << index << " Time flush response sent!" << std::endl;
+                // std::cout << "Thread ID: " << std::this_thread::get_id() << " Index: " << index
+                //           << " Time flush response sent!" << std::endl;
                 continue;
             }
-            std::cout << "Index: " << index
-                      << " Message received: " << std::string(buf.begin(), buf.begin() + len)
-                      << std::endl;
-            std::cout << "Index: " << index << " Message received from "
-                      << sender_endpoint.address().to_string() << ":" << sender_endpoint.port()
-                      << std::endl;
-            std::cout << "Index: " << index << " Message received!" << std::endl;
+            // std::cout << "Thread ID: " << std::this_thread::get_id() << " Index: " << index
+            //           << " Message received: " << std::string(buf.begin(), buf.begin() + len)
+            //           << std::endl;
+            // std::cout << "Thread ID: " << std::this_thread::get_id() << " Index: " << index
+            //           << " Message received from " << sender_endpoint.address().to_string() <<
+            //           ":"
+            //           << sender_endpoint.port() << std::endl;
+            // std::cout << "Thread ID: " << std::this_thread::get_id() << " Index: " << index
+            //           << " Message received!" << std::endl;
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
             std::string response = "Hello, UDP!";
             co_await socket.async_send_to(boost::asio::buffer(response), sender_endpoint,
                                           boost::asio::use_awaitable);
-            std::cout << "Index: " << index << " Response sent!" << std::endl;
+            // std::cout << "Thread ID: " << std::this_thread::get_id() << " Index: " << index
+            //           << " Response sent!" << std::endl;
         }
     } catch (std::exception& e) {
         std::cerr << "Exception in server: " << e.what() << std::endl;
@@ -74,7 +79,7 @@ int main() {
     auto guard = boost::asio::make_work_guard(io_context);
 
     std::vector<std::thread> threads;
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 100; ++i) {
         threads.emplace_back([&] {
             std::cout << "Thread ID: " << std::this_thread::get_id() << " io.run()" << std::endl;
             io_context.run();
