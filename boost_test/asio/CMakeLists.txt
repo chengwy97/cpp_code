@@ -8,8 +8,10 @@ add_subdirectory(001.time.sync)
 add_subdirectory(002.time.async)
 add_subdirectory(003.time.bind_param)
 add_subdirectory(004.time.bind_member_function)
-
-
-
-
-
+add_subdirectory(005.multithread)
+add_subdirectory(006.test_scrand)
+add_subdirectory(007.tcp_clinet)
+add_subdirectory(008.tcp_async_server)
+add_subdirectory(009.tcp_async_client)
+add_subdirectory(010.udp_client)
+add_subdirectory(011.udp_server)

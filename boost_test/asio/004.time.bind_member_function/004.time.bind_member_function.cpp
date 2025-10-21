@@ -15,18 +15,23 @@
 class printer {
    public:
     printer(boost::asio::io_context& io) : timer_(io, boost::asio::chrono::seconds(1)), count_(0) {
-        timer_.async_wait(std::bind(&printer::print, this));
+        timer_.async_wait(std::bind(&printer::print, this, std::placeholders::_1));
     }
 
     ~printer() { std::cout << "Final count is " << count_ << std::endl; }
 
-    void print() {
+    void print(const std::error_code& ec) {
+        if (ec) {
+            std::cout << "Error: " << ec.message() << std::endl;
+            return;
+        }
+
         if (count_ < 5) {
             std::cout << count_ << std::endl;
             ++count_;
 
             timer_.expires_at(timer_.expiry() + boost::asio::chrono::seconds(1));
-            timer_.async_wait(std::bind(&printer::print, this));
+            timer_.async_wait(std::bind(&printer::print, this, std::placeholders::_1));
         }
     }
 
