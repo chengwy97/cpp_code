@@ -137,7 +137,7 @@ boost::asio::awaitable<void> client_session(boost::asio::io_context& io_context,
     std::cout << "Receiver endpoint: " << receiver_endpoint.address().to_string() << ":"
               << receiver_endpoint.port() << std::endl;
     try {
-        for (size_t i = 0; i < 10000; i++) {
+        for (size_t i = 0; i < 100000; i++) {
             co_await boost::asio::post(io_context, boost::asio::use_awaitable);
             auto random_number = std::rand() % 2;
             if (random_number == 0) {

@@ -55,8 +55,8 @@ boost::asio::awaitable<void> udp_async_server(boost::asio::io_context& io_contex
             //           << " Message received from " << sender_endpoint.address().to_string() <<
             //           ":"
             //           << sender_endpoint.port() << std::endl;
-            // std::cout << "Thread ID: " << std::this_thread::get_id() << " Index: " << index
-            //           << " Message received!" << std::endl;
+            std::cout << "Thread ID: " << std::this_thread::get_id() << " Index: " << index
+                      << " Message received!" << std::endl;
 
             // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
@@ -90,13 +90,13 @@ int main() {
 
     // 启动协程
     boost::asio::co_spawn(io_context, udp_async_server(io_context, 0), boost::asio::detached);
-    boost::asio::co_spawn(io_context, udp_async_server(io_context, 1), boost::asio::detached);
-    boost::asio::co_spawn(io_context, udp_async_server(io_context, 2), boost::asio::detached);
-    boost::asio::co_spawn(io_context, udp_async_server(io_context, 3), boost::asio::detached);
-    boost::asio::co_spawn(io_context, udp_async_server(io_context, 4), boost::asio::detached);
-    boost::asio::co_spawn(io_context, udp_async_server(io_context, 5), boost::asio::detached);
-    boost::asio::co_spawn(io_context, udp_async_server(io_context, 6), boost::asio::detached);
-    boost::asio::co_spawn(io_context, udp_async_server(io_context, 7), boost::asio::detached);
+    // boost::asio::co_spawn(io_context, udp_async_server(io_context, 1), boost::asio::detached);
+    // boost::asio::co_spawn(io_context, udp_async_server(io_context, 2), boost::asio::detached);
+    // boost::asio::co_spawn(io_context, udp_async_server(io_context, 3), boost::asio::detached);
+    // boost::asio::co_spawn(io_context, udp_async_server(io_context, 4), boost::asio::detached);
+    // boost::asio::co_spawn(io_context, udp_async_server(io_context, 5), boost::asio::detached);
+    // boost::asio::co_spawn(io_context, udp_async_server(io_context, 6), boost::asio::detached);
+    // boost::asio::co_spawn(io_context, udp_async_server(io_context, 7), boost::asio::detached);
 
     io_context.run();
     return 0;
