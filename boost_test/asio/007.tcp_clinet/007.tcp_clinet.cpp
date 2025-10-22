@@ -58,7 +58,19 @@ boost::asio::awaitable<void> client_session(tcp::resolver::results_type endpoint
 int main() {
     std::cout << "Main thread ID: " << std::this_thread::get_id() << std::endl;
     boost::asio::io_context io_context;
-    tcp::resolver           resolver(io_context);
+    auto                    guard = boost::asio::make_work_guard(io_context);
+
+    std::vector<std::thread> threads;
+    for (int i = 0; i < 100; ++i) {
+        threads.emplace_back([&] {
+            std::cout << "Thread ID: " << std::this_thread::get_id() << " io.run()" << std::endl;
+            io_context.run();
+            std::cout << "Thread ID: " << std::this_thread::get_id() << " io.run() end"
+                      << std::endl;
+        });
+    }
+
+    tcp::resolver resolver(io_context);
 
     tcp::resolver::results_type endpoints = resolver.resolve("www.example.com", "http");
 
@@ -74,7 +86,10 @@ int main() {
     }
 
     // 启动协程
-    boost::asio::co_spawn(io_context, client_session(endpoints), boost::asio::detached);
+    for (int i = 0; i < 1000; ++i) {
+        boost::asio::co_spawn(io_context.get_executor(), client_session(endpoints),
+                              boost::asio::detached);
+    }
 
     io_context.run();
     return 0;
