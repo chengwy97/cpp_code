@@ -16,8 +16,7 @@ set(BOOST_LIBRARYDIR "${BOOST_ROOT}/lib")
 find_package(Boost 1.89.0 REQUIRED COMPONENTS filesystem thread)
 
 if(Boost_FOUND)
-    message(STATUS "Boost found at: ${Boost_INCLUDE_DIRS}")
-    message(STATUS "Boost libs: ${Boost_LIBRARIES}")
+
 else()
     message(FATAL_ERROR "Boost not found!")
 endif()

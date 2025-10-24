@@ -1,5 +1,5 @@
 //
-// mutual_exclusion_1.cpp
+// mutual_exclusion_2.cpp
 // ~~~~~~~~~~~~~~~~~~~~~~
 //
 // Copyright (c) 2003-2025 Christopher M. Kohlhoff (chris at kohlhoff dot com)
@@ -80,8 +80,12 @@ class line_based_echo_session : public std::enable_shared_from_this<line_based_e
 
                 // Claim the write lock by sending a message to the channel. Since the
                 // channel signature is void(), there are no arguments to send in the
-                // message itself.
-                co_await write_lock_.async_send();
+                // message itself. In this example we optimise for the common case,
+                // where the lock is not held by the other actor, by first trying a
+                // non-blocking send.
+                if (!write_lock_.try_send()) {
+                    co_await write_lock_.async_send();
+                }
 
                 // Respond to the client with a message, echoing the line they sent.
                 co_await async_write(socket_, "<line>"_buf);
@@ -105,8 +109,12 @@ class line_based_echo_session : public std::enable_shared_from_this<line_based_e
 
                 // Claim the write lock by sending a message to the channel. Since the
                 // channel signature is void(), there are no arguments to send in the
-                // message itself.
-                co_await write_lock_.async_send();
+                // message itself. In this example we optimise for the common case,
+                // where the lock is not held by the other actor, by first trying a
+                // non-blocking send.
+                if (!write_lock_.try_send()) {
+                    co_await write_lock_.async_send();
+                }
 
                 // Send a heartbeat to the client. As the content of the heartbeat
                 // message never varies, a buffer literal can be used to specify the

@@ -1,0 +1,6 @@
+CompileFlags:
+  Add: [
+    "-I/usr/include",
+    "-I/usr/local/include",
+    "-I/usr/local/boost/1.89.0/include"
+  ]

@@ -6,6 +6,9 @@ message(STATUS "检测到命名空间: ${NAMESPACE}")
 set(PROJECT_NAMESPACE ${NAMESPACE})
 message(STATUS "设置命名空间: ${PROJECT_NAMESPACE}")
 
-add_subdirectory(asio)
+# 将命名空间变量传递给子目录
+set(NAMESPACE
+    ${NAMESPACE}
+    PARENT_SCOPE)
 
-add_subdirectory(log)
+add_subdirectory(logging)

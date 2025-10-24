@@ -5,7 +5,8 @@
     "clangd.arguments": [
         "--background-index", // 后台索引
         "--clang-tidy", // 可选：启用 clang-tidy 检查
-        "--completion-style=detailed"
+        "--completion-style=detailed",
+        "--compile-commands-dir=."
     ],
     "clangd.semanticHighlighting": true,
     "clangd.onConfigChanged": "restart",
