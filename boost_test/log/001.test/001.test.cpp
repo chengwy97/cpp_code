@@ -18,7 +18,7 @@ int main() {
     UTILS_LOG_FATAL("This is a fatal message: {}", 113);
 
     // flush async sink
-    utils::logging::boost_log::flush_logging();
+    UTILS_LOG_FLUSH();
 
     return 0;
 }
