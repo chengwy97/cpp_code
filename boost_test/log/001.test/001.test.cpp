@@ -3,7 +3,7 @@
 #include "logging/log_def.hpp"
 
 int main() {
-    int ret = utils::logging::boost_log::init_logging("/tmp/test.log", "debug");
+    int ret = UTILS_LOG_INIT("/tmp/test.log", "debug");
     if (ret != 0) {
         std::cerr << "Failed to initialize logging" << std::endl;
         return 1;
