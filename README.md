@@ -18,3 +18,15 @@ sudo apt install clang-format cmake-format clangd-18
 pip install black autopep8 yapf
 ```
 
+
+# spdlog
+```bash
+git clone https://github.com/gabime/spdlog.git
+cd spdlog
+
+mkdir build
+cd build
+cmake ..
+sudo make install
+```
+

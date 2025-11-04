@@ -17,6 +17,13 @@ int main() {
     UTILS_LOG_ERROR("This is a error message: {}", 112);
     UTILS_LOG_FATAL("This is a fatal message: {}", 113);
 
+    UTILS_LOG(TRACE) << "This is a trace message: " << 123;
+    UTILS_LOG(DEBUG) << "This is a debug message: " << 456;
+    UTILS_LOG(INFO) << "This is a info message: " << 789;
+    UTILS_LOG(WARN) << "This is a warn message: " << 101;
+    UTILS_LOG(ERROR) << "This is a error message: " << 112;
+    UTILS_LOG(FATAL) << "This is a fatal message: " << 113;
+
     // flush async sink
     UTILS_LOG_FLUSH();
 

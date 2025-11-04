@@ -1,0 +1,27 @@
+# 获取当前CMake脚本父目录名作为命名空间
+get_filename_component(NAMESPACE ${CMAKE_CURRENT_LIST_DIR} NAME)
+message(STATUS "检测到命名空间: ${NAMESPACE}")
+
+# 设置命名空间变量
+set(PROJECT_NAMESPACE ${NAMESPACE})
+message(STATUS "设置命名空间: ${PROJECT_NAMESPACE}")
+
+add_subdirectory(sample_nodes)
+
+add_subdirectory(001.simple_node)
+add_subdirectory(002.test_port)
+add_subdirectory(003.build_first_tree)
+add_subdirectory(004.basic_port)
+add_subdirectory(005.generic_ports)
+add_subdirectory(006.reactive_sequence)
+add_subdirectory(007.crossdoor)
+add_subdirectory(008.subtree_port_remapping)
+add_subdirectory(009.load_multiple_xml)
+add_subdirectory(010.additional_node_args)
+add_subdirectory(011.scripting)
+add_subdirectory(012.observer)
+add_subdirectory(013.groot_howto)
+add_subdirectory(014.default_ports)
+add_subdirectory(015.access_by_ref)
+add_subdirectory(016.subtree_model)
+add_subdirectory(017.nodes_mocking)
