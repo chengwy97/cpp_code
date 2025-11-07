@@ -91,6 +91,24 @@ inline std::string to_string(TaskResult result) {
     }
 }
 
+/**
+ * run_coroutine: 运行协程 // 用户实现
+ * get_current_status: 获取当前状态 // 用户调用
+ * send_input_parameters: 发送输入参数 // 用户调用
+ * pause: 暂停任务 // 用户调用
+ * resume: 恢复任务 // 用户调用
+ * cancel: 取消任务 // 用户调用
+ * async_sleep: 异步睡眠 // 用户可以在 run_coroutine 中使用
+ * wait_for_input_parameters: 等待输入参数 // 用户可以在 run_coroutine 中使用
+ * async_wait_for_resume: 等待从暂停状态恢复 // 用户可以在 run_coroutine 中使用
+ * is_paused: 是否暂停 // 用户可以在 run_coroutine 中使用
+ * is_cancelled: 是否取消 // 用户可以在 run_coroutine 中使用
+ * is_completed: 是否完成 // 用户可以在 run_coroutine 中使用
+ * is_failed: 是否失败 // 用户可以在 run_coroutine 中使用
+ * is_running: 是否运行 // 用户可以在 run_coroutine 中使用
+ * is_initial: 是否初始化 // 用户可以在 run_coroutine 中使用
+ */
+
 template <typename T>
 class Task : public std::enable_shared_from_this<Task<T>> {
    public:
