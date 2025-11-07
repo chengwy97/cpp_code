@@ -4,6 +4,8 @@ project(cpp_test)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include(cmake/GetTlExpected.cmake)
+
 add_subdirectory(utils)
 add_subdirectory(boost_test)
 add_subdirectory(behaviortree_test)
