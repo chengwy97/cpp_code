@@ -14,8 +14,9 @@ class TestTask : public task::Task<int> {
             final_result_ = task::TaskResult::FAILURE;
         }
 
-        resume();
         is_end = true;
+
+        resume();
     }
 
     boost::asio::awaitable<task::TaskResult> run_coroutine() override {
@@ -58,21 +59,30 @@ int main() {
     std::shared_ptr<TestTask> test_task = std::make_shared<TestTask>("TestTask");
     test_task->run();
 
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-
-    while (!test_task->cancel()) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    }
+    int i = 0;
 
     auto status = test_task->get_current_status();
+    UTILS_LOG_INFO("TestTask initial status: {}", task::to_string(status));
     while (status != task::TaskStatus::COMPLETED && status != task::TaskStatus::FAILED &&
-           status != task::TaskStatus::CANCELLED) {
+           status != task::TaskStatus::CANCELLED && i++ < 10) {
         // UTILS_LOG_INFO("TestTask status: {}", task::to_string(status));
 
         // test_task->end_task(11);
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
         status = test_task->get_current_status();
+
+        if (test_task->send_input_parameters(i)) {
+            UTILS_LOG_INFO("TestTask sent input parameters: {}", i);
+        } else {
+            UTILS_LOG_ERROR("TestTask send input parameters failed");
+        }
     }
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+
+    test_task->end_task(11);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    status = test_task->get_current_status();
 
     UTILS_LOG_INFO("TestTask completed, status: {}", task::to_string(status));
 

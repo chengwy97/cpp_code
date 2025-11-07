@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.10)
 get_filename_component(CUR_NAME ${CMAKE_CURRENT_LIST_DIR} NAME)
 # 父命名空间由父CMakeLists.txt传递，这里假定为 PROJECT_NAMESPACE
 set(NAMESPACE "${PROJECT_NAMESPACE}")
-message(STATUS "当前命名空间: ${NAMESPACE}")
+# message(STATUS "当前命名空间: ${NAMESPACE}")
 
 # 生成可执行文件名
 set(LIBRARY_NAME "${NAMESPACE}_${CUR_NAME}")

@@ -1,6 +1,6 @@
 # 获取当前CMake脚本父目录名作为命名空间
 get_filename_component(NAMESPACE ${CMAKE_CURRENT_LIST_DIR} NAME)
-message(STATUS "检测到命名空间: ${NAMESPACE}")
+# message(STATUS "检测到命名空间: ${NAMESPACE}")
 
 # 设置命名空间变量
 set(PROJECT_NAMESPACE ${NAMESPACE})
@@ -32,3 +32,4 @@ add_subdirectory(020.waypoints)
 add_subdirectory(021.test_halt)
 add_subdirectory(023.task_thread_test)
 add_subdirectory(024.test_task)
+add_subdirectory(025.test_user_data)
