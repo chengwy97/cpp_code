@@ -54,7 +54,7 @@ class TestTask : public task::Task<int> {
 };
 
 int main() {
-    UTILS_LOG_INIT("test.log", "info");
+    UTILS_LOG_INIT("test.log", "debug");
 
     std::shared_ptr<TestTask> test_task = std::make_shared<TestTask>("TestTask");
     test_task->run();

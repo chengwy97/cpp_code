@@ -104,18 +104,25 @@ class Task : public std::enable_shared_from_this<Task<T>> {
           task_control_channel_(ThreadPool::instance().get_coroutine_io_context().get_executor(),
                                 1) {}
     virtual ~Task() {
+        while (!cancel()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        }
+
         input_parameters_channel_.close();
         task_control_channel_.close();
     }
 
-    void run() {
+    bool run() {
         std::lock_guard<std::mutex> lock(current_status_mutex_);
         if (current_status_ != TaskStatus::INITIAL) {
-            return;
+            UTILS_LOG_ERROR("Task {} run failed, current status is not INITIAL", name_);
+            return false;
         }
+
         current_status_ = TaskStatus::RUNNING;
         result_         = ThreadPool::instance().post_coroutine(
             std::bind(&Task<T>::run_coroutine, this->shared_from_this()));
+        return true;
     }
 
     virtual boost::asio::awaitable<TaskResult> run_coroutine() = 0;
@@ -163,32 +170,33 @@ class Task : public std::enable_shared_from_this<Task<T>> {
 
     // 此处不用通过 channel 发送命令，由协程自行轮询，发现 pause 了，就进入暂停状态
     bool pause() {
-        UTILS_LOG_DEBUG("Task pause");
+        UTILS_LOG_DEBUG("Task {} pause", name_);
 
         std::lock_guard<std::mutex> lock(current_status_mutex_);
         if (current_status_ != TaskStatus::RUNNING && current_status_ != TaskStatus::PAUSED) {
             return false;
         }
-        current_status_ = TaskStatus::PAUSED;
 
-        if (task_control_channel_.try_send(boost::system::error_code{}, TaskCommand::PAUSE)) {
-            return true;
+        if (!task_control_channel_.try_send(boost::system::error_code{}, TaskCommand::PAUSE)) {
+            return false;
         }
-        return false;
+
+        current_status_ = TaskStatus::PAUSED;
+        return true;
     }
 
     bool resume() {
-        UTILS_LOG_DEBUG("Task resume");
+        UTILS_LOG_DEBUG("Task {} resume", name_);
         // 先发送命令，成功后再更新状态
         TaskCommand command = TaskCommand::RESUME;
         if (!task_control_channel_.try_send(boost::system::error_code{}, command)) {
-            UTILS_LOG_ERROR("Task resume failed");
+            UTILS_LOG_ERROR("Task {} resume failed", name_);
             return false;
         }
 
         // 不能在此处修改状态，应该在 async_wait_for_resume
         // 中确认唤醒了，由唤醒的协程来修改，此处一旦修改，但是可能实际未被唤醒
-        UTILS_LOG_DEBUG("Task resume success");
+        UTILS_LOG_DEBUG("Task {} resume success", name_);
         return true;
     }
 
@@ -196,6 +204,10 @@ class Task : public std::enable_shared_from_this<Task<T>> {
     // false，任务内部状态也发生变化了，后续只能再重复调用 cancel 不能再认为任务状态未取消成功
     bool cancel() {
         std::lock_guard<std::mutex> lock(current_status_mutex_);
+        if (current_status_ == TaskStatus::COMPLETED || current_status_ == TaskStatus::FAILED) {
+            return true;
+        }
+
         if (current_status_ != TaskStatus::RUNNING && current_status_ != TaskStatus::PAUSED &&
             current_status_ != TaskStatus::CANCELLED) {
             return false;
@@ -223,7 +235,7 @@ class Task : public std::enable_shared_from_this<Task<T>> {
     boost::asio::awaitable<tl::expected<T, std::string>> wait_for_input_parameters() {
         using namespace boost::asio::experimental::awaitable_operators;
 
-        UTILS_LOG_DEBUG("Task is waiting for input parameters");
+        UTILS_LOG_DEBUG("Task {} is waiting for input parameters", name_);
         // 同时等待输入参数和控制命令
         auto result = co_await (
             input_parameters_channel_.async_receive(
@@ -234,76 +246,80 @@ class Task : public std::enable_shared_from_this<Task<T>> {
         // TaskCommand>>
         if (std::holds_alternative<std::tuple<boost::system::error_code, T>>(result)) {
             // 收到输入参数
-            UTILS_LOG_DEBUG("Task received input parameters");
+            UTILS_LOG_DEBUG("Task {} received input parameters", name_);
             auto [e, value] = std::get<std::tuple<boost::system::error_code, T>>(result);
             if (e) {
-                UTILS_LOG_ERROR("Task received input parameters error: {}", e.message());
+                UTILS_LOG_ERROR("Task {} received input parameters error: {}", name_, e.message());
                 co_return tl::unexpected(e.message());
             }
-            UTILS_LOG_DEBUG("Task received input parameters");
+            UTILS_LOG_DEBUG("Task {} received input parameters", name_);
             co_return tl::expected<T, std::string>(std::move(value));
         } else {
             // 收到控制命令
-            UTILS_LOG_DEBUG("Task received control command");
+            UTILS_LOG_DEBUG("Task {} received control command", name_);
             auto [e, command] =
                 std::get<std::tuple<boost::system::error_code, TaskCommand>>(result);
             if (e) {
-                UTILS_LOG_ERROR("Task received control command error: {}", e.message());
+                UTILS_LOG_ERROR("Task {} received control command error: {}", name_, e.message());
                 co_return tl::unexpected(e.message());
             }
 
             // 处理控制命令
             if (command == TaskCommand::CANCEL) {
-                UTILS_LOG_DEBUG("Task received CANCEL command, cancelling");
-                co_return tl::unexpected("Task cancelled while waiting for input parameters");
+                UTILS_LOG_DEBUG("Task {} received CANCEL command, cancelling", name_);
+                co_return tl::unexpected(
+                    fmt::format("Task {} cancelled while waiting for input parameters", name_));
             } else if (command == TaskCommand::PAUSE) {
-                UTILS_LOG_DEBUG("Task received PAUSE command, pausing");
-                co_return tl::unexpected("Task paused while waiting for input parameters");
+                UTILS_LOG_DEBUG("Task {} received PAUSE command, pausing", name_);
+                co_return tl::unexpected(
+                    fmt::format("Task {} paused while waiting for input parameters", name_));
             } else if (command == TaskCommand::RESUME) {
-                UTILS_LOG_DEBUG("Task received RESUME command, resuming");
-                co_return tl::unexpected("Task resumed while waiting for input parameters");
+                UTILS_LOG_DEBUG("Task {} received RESUME command, resuming", name_);
+                co_return tl::unexpected(
+                    fmt::format("Task {} resumed while waiting for input parameters", name_));
             }
         }
 
-        co_return tl::unexpected("Unknown error while waiting for input parameters");
+        co_return tl::unexpected(
+            fmt::format("Task {} unknown error while waiting for input parameters", name_));
     }
 
     // 等待从暂停状态恢复
     // true: 表示正常从 pause 状态恢复，或者无需等待（不在 pause 状态）
     // false: 表示被异常终止（收到 CANCEL 命令或 channel 错误）
     boost::asio::awaitable<bool> async_wait_for_resume() {
-        UTILS_LOG_DEBUG("Task is waiting for resume");
+        UTILS_LOG_DEBUG("Task {} is waiting for resume", name_);
 
         while (is_paused()) {
-            UTILS_LOG_DEBUG("Task is paused, waiting for resume");
+            UTILS_LOG_DEBUG("Task {} is paused, waiting for resume", name_);
 
             auto [e, command] = co_await task_control_channel_.async_receive(
                 boost::asio::as_tuple(boost::asio::use_awaitable));
             if (e) {
-                UTILS_LOG_ERROR("Task async_wait_for_resume error: {}", e.message());
+                UTILS_LOG_ERROR("Task {} async_wait_for_resume error: {}", name_, e.message());
                 co_return false;  // channel 错误
             }
             if (command == TaskCommand::RESUME) {
-                UTILS_LOG_DEBUG("Task received RESUME command, resuming");
+                UTILS_LOG_DEBUG("Task {} received RESUME command, resuming", name_);
                 co_return set_status(TaskStatus::RUNNING);
             }
 
             if (command == TaskCommand::PAUSE) {
-                UTILS_LOG_DEBUG("Task received PAUSE command, pausing");
+                UTILS_LOG_DEBUG("Task {} received PAUSE command, pausing", name_);
                 continue;
             }
 
             // 收到其他命令（如 CANCEL）
-            UTILS_LOG_ERROR("Task received unknown command: {}", to_string(command));
+            UTILS_LOG_ERROR("Task {} received unknown command: {}", name_, to_string(command));
             co_return false;
         }
 
-        UTILS_LOG_DEBUG("Task is not paused, no need to wait for resume");
+        UTILS_LOG_DEBUG("Task {} is not paused, no need to wait for resume", name_);
         co_return true;  // 不在 pause 状态，无需等待
     }
 
     bool set_status(TaskStatus status) {
-        UTILS_LOG_DEBUG("Task set_status from {} to {}", to_string(current_status_),
+        UTILS_LOG_DEBUG("Task {} set_status from {} to {}", name_, to_string(current_status_),
                         to_string(status));
 
         std::lock_guard<std::mutex> lock(current_status_mutex_);
