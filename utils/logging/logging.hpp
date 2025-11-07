@@ -69,9 +69,50 @@ class LogStream {
 }  // namespace logging
 }  // namespace utils
 
-#define UTILS_SPDLOG_LOG_TRACE(fmt, ...) SPDLOG_TRACE(fmt, ##__VA_ARGS__)
-#define UTILS_SPDLOG_LOG_DEBUG(fmt, ...) SPDLOG_DEBUG(fmt, ##__VA_ARGS__)
-#define UTILS_SPDLOG_LOG_INFO(fmt, ...) SPDLOG_INFO(fmt, ##__VA_ARGS__)
-#define UTILS_SPDLOG_LOG_WARN(fmt, ...) SPDLOG_WARN(fmt, ##__VA_ARGS__)
-#define UTILS_SPDLOG_LOG_ERROR(fmt, ...) SPDLOG_ERROR(fmt, ##__VA_ARGS__)
-#define UTILS_SPDLOG_LOG_FATAL(fmt, ...) SPDLOG_CRITICAL(fmt, ##__VA_ARGS__)
+#define UTILS_SPDLOG_LOG_TRACE(fmt, ...)                                         \
+    do {                                                                         \
+        if (auto logger = ::utils::logging::spdlog_log::get_default_logger()) {  \
+            logger->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, \
+                        spdlog::level::trace, fmt, ##__VA_ARGS__);               \
+        }                                                                        \
+    } while (0)
+
+#define UTILS_SPDLOG_LOG_DEBUG(fmt, ...)                                         \
+    do {                                                                         \
+        if (auto logger = ::utils::logging::spdlog_log::get_default_logger()) {  \
+            logger->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, \
+                        spdlog::level::debug, fmt, ##__VA_ARGS__);               \
+        }                                                                        \
+    } while (0)
+
+#define UTILS_SPDLOG_LOG_INFO(fmt, ...)                                          \
+    do {                                                                         \
+        if (auto logger = ::utils::logging::spdlog_log::get_default_logger()) {  \
+            logger->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, \
+                        spdlog::level::info, fmt, ##__VA_ARGS__);                \
+        }                                                                        \
+    } while (0)
+
+#define UTILS_SPDLOG_LOG_WARN(fmt, ...)                                          \
+    do {                                                                         \
+        if (auto logger = ::utils::logging::spdlog_log::get_default_logger()) {  \
+            logger->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, \
+                        spdlog::level::warn, fmt, ##__VA_ARGS__);                \
+        }                                                                        \
+    } while (0)
+
+#define UTILS_SPDLOG_LOG_ERROR(fmt, ...)                                         \
+    do {                                                                         \
+        if (auto logger = ::utils::logging::spdlog_log::get_default_logger()) {  \
+            logger->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, \
+                        spdlog::level::err, fmt, ##__VA_ARGS__);                 \
+        }                                                                        \
+    } while (0)
+
+#define UTILS_SPDLOG_LOG_FATAL(fmt, ...)                                         \
+    do {                                                                         \
+        if (auto logger = ::utils::logging::spdlog_log::get_default_logger()) {  \
+            logger->log(spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, \
+                        spdlog::level::critical, fmt, ##__VA_ARGS__);            \
+        }                                                                        \
+    } while (0)

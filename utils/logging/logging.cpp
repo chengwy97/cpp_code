@@ -50,8 +50,9 @@ int init_logging(const std::string& log_name, const std::string& log_level) {
         else if (lower_level == "fatal")
             level = spdlog::level::critical;
 
-        // 设置日志级别
+        // 设置日志级别（同时设置全局和 logger 的级别）
         spdlog::set_level(level);
+        g_logger->set_level(level);
 
         // 设置日志格式: [时间] [级别] [线程ID] 消息
         spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] [%t] [%g:%#] %v");
