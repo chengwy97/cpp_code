@@ -30,3 +30,28 @@ cmake ..
 sudo make install
 ```
 
+```bash
+sudo apt install libzmq3-dev libsqlite3-dev google-mock
+
+sudo apt install libgtest-dev
+
+cd /usr/src/googletest
+# 创建一个构建目录
+sudo mkdir build
+cd build
+# 配置并编译
+sudo cmake ..
+sudo make
+# 安装到系统库目录
+sudo make install
+
+
+git clone https://github.com/BehaviorTree/BehaviorTree.CPP.git
+
+mkdir build
+cd build
+cmake ..
+sudo make install
+
+```
+
