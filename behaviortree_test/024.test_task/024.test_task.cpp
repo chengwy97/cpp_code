@@ -18,12 +18,29 @@ class TestTask : public task::Task<int> {
         is_end = true;
     }
 
+    bool when_pause() override {
+        UTILS_LOG_INFO("TestTask when_pause");
+        return true;
+    }
+
+    bool when_resume() override {
+        UTILS_LOG_INFO("TestTask when_resume");
+        return true;
+    }
+
+    bool when_cancel() override {
+        UTILS_LOG_INFO("TestTask when_cancel");
+        return true;
+    }
+
     boost::asio::awaitable<task::TaskResult> run_coroutine() override {
         co_await boost::asio::this_coro::executor;
         UTILS_LOG_INFO("TestTask running");
 
         while (!is_end) {
             if (is_cancelled()) {
+                while (!when_cancel()) {
+                }
                 UTILS_LOG_INFO("TestTask is cancelled");
                 co_return task::TaskResult::CANCELLED;
             }

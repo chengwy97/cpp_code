@@ -144,6 +144,9 @@ class Task : public std::enable_shared_from_this<Task<T>> {
     }
 
     virtual boost::asio::awaitable<TaskResult> run_coroutine() = 0;
+    virtual bool                               when_pause() { return true; }
+    virtual bool                               when_resume() { return true; }
+    [[nodiscard]] virtual bool                 when_cancel() = 0;
 
     TaskStatus get_current_status() {
         std::lock_guard<std::mutex> lock(current_status_mutex_);
@@ -311,6 +314,11 @@ class Task : public std::enable_shared_from_this<Task<T>> {
         while (is_paused()) {
             UTILS_LOG_DEBUG("Task {} is paused, waiting for resume", name_);
 
+            if (!when_pause()) {
+                UTILS_LOG_ERROR("Task {} when_pause return false, terminating", name_);
+                co_return false;
+            }
+
             auto [e, command] = co_await task_control_channel_.async_receive(
                 boost::asio::as_tuple(boost::asio::use_awaitable));
             if (e) {
@@ -319,6 +327,10 @@ class Task : public std::enable_shared_from_this<Task<T>> {
             }
             if (command == TaskCommand::RESUME) {
                 UTILS_LOG_DEBUG("Task {} received RESUME command, resuming", name_);
+                if (!when_resume()) {
+                    UTILS_LOG_ERROR("Task {} when_resume return false, terminating", name_);
+                    co_return false;
+                }
                 co_return set_status(TaskStatus::RUNNING);
             }
 
