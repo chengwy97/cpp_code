@@ -5,3 +5,5 @@ set(NAMESPACE "${PROJECT_NAMESPACE}_${CUR_NAME}")
 # message(STATUS "当前命名空间: ${NAMESPACE}")
 
 add_subdirectory(001.auto_nullptr_range_based)
+add_subdirectory(002.decltype_init_type_traits)
+add_subdirectory(003.any_test)

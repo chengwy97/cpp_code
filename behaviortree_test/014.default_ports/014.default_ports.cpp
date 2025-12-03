@@ -44,7 +44,9 @@ using namespace BT;
 class NodeWithDefaultPoints : public SyncActionNode {
    public:
     NodeWithDefaultPoints(const std::string& name, const NodeConfig& config)
-        : SyncActionNode(name, config) {}
+        : SyncActionNode(name, config) {
+            std::cout << "NodeWithDefaultPoints constructor" << std::endl;
+        }
 
     NodeStatus tick() override {
         // Let0s check if all the portas have the expected value
@@ -86,14 +88,20 @@ int main() {
     std::string xml_txt = R"(
     <root BTCPP_format="4" >
       <BehaviorTree>
-        <NodeWithDefaultPoints input="-1,-2"/>
+        <Sequence>
+            <NodeWithDefaultPoints1 input="-1,-2"/>
+            <NodeWithDefaultPoints2 input="-1,-2"/>
+        </Sequence>
       </BehaviorTree>
     </root>)";
+
+    std::cout << xml_txt << std::endl;
 
     JsonExporter::get().addConverter<Point2D>();
 
     BehaviorTreeFactory factory;
-    factory.registerNodeType<NodeWithDefaultPoints>("NodeWithDefaultPoints");
+    factory.registerNodeType<NodeWithDefaultPoints>("NodeWithDefaultPoints1");
+    factory.registerNodeType<NodeWithDefaultPoints>("NodeWithDefaultPoints2");
     auto tree = factory.createTreeFromText(xml_txt);
 
     tree.subtrees.front()->blackboard->set<Point2D>("point", Point2D{3, 4});
