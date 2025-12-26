@@ -1,0 +1,4 @@
+#pragma once
+
+constexpr const char* GIT_COMMIT_ID = "@GIT_COMMIT_ID@";
+constexpr const char* BUILD_TIME    = "@BUILD_TIME@";
