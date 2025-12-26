@@ -1,10 +1,5 @@
-cmake_minimum_required(VERSION 3.20)
-project(cpp_test VERSION 0.1.0)
-
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-include(cmake/GetTlExpected.cmake)
+# ========== 项目版本信息 ==========
+project(MyProject VERSION 1.2.3)
 
 # 从 PROJECT_VERSION 提取主版本号、次版本号、补丁号
 string(REGEX MATCH "^([0-9]+)" VERSION_MAJOR "${PROJECT_VERSION}")
@@ -135,7 +130,3 @@ configure_file(
 
 include_directories(${CMAKE_BINARY_DIR}/generated)
 
-add_subdirectory(utils)
-add_subdirectory(boost_test)
-add_subdirectory(behaviortree_test)
-add_subdirectory(cpp_test)
