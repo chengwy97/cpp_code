@@ -1,0 +1,12 @@
+---
+Checks: >
+  cppcoreguidelines-owning-memory,
+  clang-analyzer-cplusplus.NewDeleteLeaks
+WarningsAsErrors: ''
+HeaderFilterRegex: '.*'
+CheckOptions:
+  - key: cppcoreguidelines-owning-memory.OwnerType
+    value: 'gsl::owner'
+  - key: cppcoreguidelines-owning-memory.OwnerNamespace
+    value: 'gsl'
+

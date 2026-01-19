@@ -7,6 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include(cmake/GetTlExpected.cmake)
 include(cmake/GetOneTBB.cmake)
 include(cmake/GetGSL.cmake)
+include(cmake/GetFrozen.cmake)
+include(cmake/GetMagicEnum.cmake)
 
 # 从 PROJECT_VERSION 提取主版本号、次版本号、补丁号
 string(REGEX MATCH "^([0-9]+)" VERSION_MAJOR "${PROJECT_VERSION}")

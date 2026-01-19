@@ -8,7 +8,28 @@
 #include "filesystem_wrapper/filesystem_wrapper.hpp"
 #include "logging/log_def.hpp"
 
-int main(int argc, char* argv[]) {
+namespace test {
+class Test {
+   public:
+    Test() { std::cout << "Test constructor" << std::endl; }
+    ~Test() { std::cout << "Test destructor" << std::endl; }
+    int a = 10;
+};
+
+void print_test(const Test& test) {
+    std::cout << "Test print: " << test.a << std::endl;
+}
+}  // namespace test
+
+void test_gsl_finally() {
+    auto finally_action = gsl::finally([]() { std::cout << "finally action" << std::endl; });
+
+    std::cout << "finally action" << std::endl;
+
+    std::cout << 1 << std::endl;
+}
+
+int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
     std::string_view str      = "test";
     auto             str_span = gsl::span<const char>(str.data(), str.size());
     for (auto& c : str_span) {
@@ -24,5 +45,14 @@ int main(int argc, char* argv[]) {
 
     Expects(1 > 0);
     Ensures(1 > 0);
+
+    test_gsl_finally();
+
+    gsl::owner<int*> owner_int = new int(1);
+    std::cout << *owner_int << std::endl;
+
+    // adl 规则
+    test::Test test;
+    print_test(test);
     return 0;
 }

@@ -5,7 +5,7 @@
     "clangd.arguments": [
         "--background-index", // 后台索引
         "--clang-tidy", // 可选：启用 clang-tidy 检查
-        "--completion-style=detailed",
+        "--clang-tidy-checks=clang-analyzer-*,cppcoreguidelines-*",
         "--compile-commands-dir=."
     ],
     "clangd.semanticHighlighting": true,
