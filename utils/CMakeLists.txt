@@ -12,4 +12,5 @@ set(NAMESPACE
     PARENT_SCOPE)
 
 add_subdirectory(logging)
+add_subdirectory(log_struct)
 add_subdirectory(filesystem_wrapper)

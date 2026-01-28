@@ -143,3 +143,5 @@ add_subdirectory(utils)
 add_subdirectory(boost_test)
 add_subdirectory(behaviortree_test)
 add_subdirectory(cpp_test)
+
+add_subdirectory(cmake_test)
