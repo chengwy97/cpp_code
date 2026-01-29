@@ -41,7 +41,7 @@ class LogStruct {
     std::atomic<std::pmr::vector<std::byte>*> current_vector_;
     std::atomic<std::pmr::vector<std::byte>*> next_vector_;
 
-    std::atomic<bool> is_switching_ = false;
+    // std::atomic<bool> is_switching_ = false;
 
     std::jthread write_thread_;
 

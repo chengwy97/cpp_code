@@ -4,7 +4,6 @@ get_filename_component(NAMESPACE ${CMAKE_CURRENT_LIST_DIR} NAME)
 
 # 设置命名空间变量
 set(PROJECT_NAMESPACE ${NAMESPACE})
-message(STATUS "设置命名空间: ${PROJECT_NAMESPACE}")
 
 add_subdirectory(stand_cpp)
 add_subdirectory(test_static_lib)

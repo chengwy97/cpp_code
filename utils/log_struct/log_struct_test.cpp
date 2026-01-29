@@ -6,16 +6,17 @@
 #include <fstream>
 
 struct TestData {
-    int    a;
-    double b;
-    double c;
-    double d;
-    double e;
-    double f;
-    double g;
-    double h;
-    double i;
-    double j;
+    int64_t timestamp;
+    int64_t a;
+    double  b;
+    double  c;
+    double  d;
+    double  e;
+    double  f;
+    double  g;
+    double  h;
+    double  i;
+    double  j;
 };
 
 std::string log_path = "/tmp/test.log";
@@ -28,6 +29,9 @@ TEST(LogStructTest, Write) {
     std::size_t time_count     = 0;
     for (int i = 0; i < 100000; ++i) {
         TestData test_data;
+        test_data.timestamp = std::chrono::duration_cast<std::chrono::microseconds>(
+                                  std::chrono::system_clock::now().time_since_epoch())
+                                  .count();
         test_data.a     = i;
         test_data.b     = i + 1.0;
         test_data.c     = i + 2.0;

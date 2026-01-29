@@ -51,14 +51,16 @@ bool LogStruct::flush() {
         return false;
     }
 
+    is_writing_.store(true, std::memory_order_relaxed);
+
     // 手动触发 Ping-Pong 切换
-    is_switching_.store(true, std::memory_order_relaxed);
+    // is_switching_.store(true, std::memory_order_seq_cst);
     auto old_current = current_vector_.load(std::memory_order_relaxed);
     auto old_next    = next_vector_.load(std::memory_order_relaxed);
 
     current_vector_.store(old_next, std::memory_order_relaxed);
     next_vector_.store(old_current, std::memory_order_relaxed);
-    is_switching_.store(false, std::memory_order_relaxed);
+    // is_switching_.store(false, std::memory_order_release);
 
     has_data_to_write.test_and_set(std::memory_order_release);
     has_data_to_write.notify_one();
@@ -67,10 +69,10 @@ bool LogStruct::flush() {
 }
 
 bool LogStruct::write(const std::byte* data) {
-    if (is_switching_.load(std::memory_order_relaxed)) {
-        std::cerr << "write while switching" << std::endl;
-        return false;
-    }
+    // if (is_switching_.load(std::memory_order_acquire)) {
+    //     std::cerr << "write while switching" << std::endl;
+    //     return false;
+    // }
 
     auto curr = current_vector_.load(std::memory_order_relaxed);
 
@@ -92,11 +94,9 @@ bool LogStruct::write(const std::byte* data) {
 }
 
 void LogStruct::writeToFile(std::stop_token st) {
-    while (!st.stop_requested()) {
+    while (!st.stop_requested() || has_data_to_write.test()) {
         // 等待信号，如果 flag 为 false 则阻塞
         has_data_to_write.wait(false, std::memory_order_acquire);
-
-        is_writing_.store(true, std::memory_order_relaxed);
 
         auto target = next_vector_.load();
 

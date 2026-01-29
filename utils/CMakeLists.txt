@@ -4,7 +4,6 @@ get_filename_component(NAMESPACE ${CMAKE_CURRENT_LIST_DIR} NAME)
 
 # 设置命名空间变量
 set(PROJECT_NAMESPACE ${NAMESPACE})
-message(STATUS "设置命名空间: ${PROJECT_NAMESPACE}")
 
 # 将命名空间变量传递给子目录
 set(NAMESPACE
