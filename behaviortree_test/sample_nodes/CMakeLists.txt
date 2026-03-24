@@ -12,8 +12,7 @@ set(LIBRARY_NAME "${NAMESPACE}_${CUR_NAME}")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# 查找 behaviortree.cpp
-find_package(behaviortree_cpp REQUIRED)
+
 
 file(GLOB SOURCE_FILES "*.cpp")
 
@@ -21,7 +20,7 @@ file(GLOB SOURCE_FILES "*.cpp")
 add_library(${LIBRARY_NAME} ${SOURCE_FILES})
 
 # 使用现代 CMake 方式链接到 behaviortree_cpp target
-target_link_libraries(${LIBRARY_NAME} PUBLIC BT::behaviortree_cpp)
+target_link_libraries(${LIBRARY_NAME} PUBLIC behaviortree_cpp::behaviortree_cpp)
 target_link_libraries(${LIBRARY_NAME} PUBLIC utils::logging)
 
 target_compile_options(${LIBRARY_NAME} PRIVATE -Wall -Wextra -Wunused-function)
