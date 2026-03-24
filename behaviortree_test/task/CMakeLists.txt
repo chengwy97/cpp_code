@@ -13,12 +13,12 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # 指定 Boost 安装路径
-set(BOOST_ROOT "/usr/local/boost/1.89.0")
-set(BOOST_INCLUDEDIR "${BOOST_ROOT}/include")
-set(BOOST_LIBRARYDIR "${BOOST_ROOT}/lib")
+# set(BOOST_ROOT "/usr/local/boost/1.89.0")
+# set(BOOST_INCLUDEDIR "${BOOST_ROOT}/include")
+# set(BOOST_LIBRARYDIR "${BOOST_ROOT}/lib")
 
 # 使用旧的 FindBoost 模块
-find_package(Boost 1.89.0 REQUIRED COMPONENTS filesystem thread)
+find_package(Boost 1.83.0 REQUIRED COMPONENTS filesystem thread)
 
 if(Boost_FOUND)
 

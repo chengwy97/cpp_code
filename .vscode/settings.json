@@ -1,124 +1,124 @@
 {
-    // 使用 clangd 作为 C/C++ 语言服务器
-    "C_Cpp.intelliSenseEngine": "Disabled", // 禁用 MS C/C++ IntelliSense
-    "clangd.path": "/usr/bin/clangd-18", // 根据实际 clangd 路径修改
-    "clangd.arguments": [
-        "--background-index", // 后台索引
-        "--clang-tidy", // 可选：启用 clang-tidy 检查
-        "--clang-tidy-checks=clang-analyzer-*,cppcoreguidelines-*",
-        "--compile-commands-dir=."
-    ],
-    "clangd.semanticHighlighting": true,
-    "clangd.onConfigChanged": "restart",
-    // 保存时自动格式化
-    "editor.formatOnSave": true,
-    // ===================== C++ / C =====================
-    "[cpp]": {
-        "editor.defaultFormatter": "xaver.clang-format"
-    },
-    "[c]": {
-        "editor.defaultFormatter": "xaver.clang-format"
-    },
-    "clang-format.executable": "/usr/bin/clang-format",
-    "C_Cpp.clang_format_fallbackStyle": "Google",
-    // ===================== Python =====================
-    "[python]": {
-        "editor.defaultFormatter": "ms-python.python"
-    },
-    "python.formatting.provider": "black",
-    "python.formatting.blackArgs": [
-        "--line-length",
-        "100"
-    ],
-    // ===================== CMake =====================
-    "[cmake]": {
-        "editor.defaultFormatter": "cheshirekow.cmake-format"
-    },
-    "cmakeFormat.executablePath": "/usr/bin/cmake-format",
-    // ===================== 文件处理 =====================
-    "files.trimTrailingWhitespace": true,
-    "files.insertFinalNewline": true,
-    "editor.tabSize": 2,
-    "editor.detectIndentation": false,
-    "editor.rulers": [
-        100
-    ],
-    "editor.wordWrap": "off",
-    "files.associations": {
-        "any": "cpp",
-        "array": "cpp",
-        "atomic": "cpp",
-        "bit": "cpp",
-        "*.tcc": "cpp",
-        "cctype": "cpp",
-        "charconv": "cpp",
-        "chrono": "cpp",
-        "clocale": "cpp",
-        "cmath": "cpp",
-        "codecvt": "cpp",
-        "compare": "cpp",
-        "complex": "cpp",
-        "concepts": "cpp",
-        "condition_variable": "cpp",
-        "coroutine": "cpp",
-        "csignal": "cpp",
-        "cstdarg": "cpp",
-        "cstddef": "cpp",
-        "cstdint": "cpp",
-        "cstdio": "cpp",
-        "cstdlib": "cpp",
-        "cstring": "cpp",
-        "ctime": "cpp",
-        "cwchar": "cpp",
-        "cwctype": "cpp",
-        "deque": "cpp",
-        "list": "cpp",
-        "map": "cpp",
-        "string": "cpp",
-        "unordered_map": "cpp",
-        "vector": "cpp",
-        "exception": "cpp",
-        "algorithm": "cpp",
-        "functional": "cpp",
-        "iterator": "cpp",
-        "memory": "cpp",
-        "memory_resource": "cpp",
-        "numeric": "cpp",
-        "optional": "cpp",
-        "random": "cpp",
-        "ratio": "cpp",
-        "source_location": "cpp",
-        "string_view": "cpp",
-        "system_error": "cpp",
-        "tuple": "cpp",
-        "type_traits": "cpp",
-        "utility": "cpp",
-        "format": "cpp",
-        "future": "cpp",
-        "initializer_list": "cpp",
-        "iomanip": "cpp",
-        "iosfwd": "cpp",
-        "iostream": "cpp",
-        "istream": "cpp",
-        "limits": "cpp",
-        "mutex": "cpp",
-        "new": "cpp",
-        "numbers": "cpp",
-        "ostream": "cpp",
-        "semaphore": "cpp",
-        "shared_mutex": "cpp",
-        "span": "cpp",
-        "sstream": "cpp",
-        "stdexcept": "cpp",
-        "stdfloat": "cpp",
-        "stop_token": "cpp",
-        "streambuf": "cpp",
-        "thread": "cpp",
-        "cinttypes": "cpp",
-        "typeindex": "cpp",
-        "typeinfo": "cpp",
-        "variant": "cpp",
-        "*.ipp": "cpp",
-        "expected": "cpp"
-    }
+  // 使用 clangd 作为 C/C++ 语言服务器
+  "C_Cpp.intelliSenseEngine": "Disabled", // 禁用 MS C/C++ IntelliSense
+  "clangd.path": "/usr/bin/clangd-18", // 根据实际 clangd 路径修改
+  "clangd.arguments": [
+    "--background-index", // 后台索引
+    "--clang-tidy", // 可选：启用 clang-tidy 检查
+    "--clang-tidy-checks=clang-analyzer-*,cppcoreguidelines-*",
+    "--compile-commands-dir=build"
+  ],
+  "clangd.semanticHighlighting": true,
+  "clangd.onConfigChanged": "restart",
+  // 保存时自动格式化
+  "editor.formatOnSave": true,
+  // ===================== C++ / C =====================
+  "[cpp]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  },
+  "[c]": {
+    "editor.defaultFormatter": "xaver.clang-format"
+  },
+  "clang-format.executable": "/usr/bin/clang-format",
+  "C_Cpp.clang_format_fallbackStyle": "Google",
+  // ===================== Python =====================
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.python"
+  },
+  "python.formatting.provider": "black",
+  "python.formatting.blackArgs": [
+    "--line-length",
+    "100"
+  ],
+  // ===================== CMake =====================
+  "[cmake]": {
+    "editor.defaultFormatter": "cheshirekow.cmake-format"
+  },
+  "cmakeFormat.executablePath": "/usr/bin/cmake-format",
+  // ===================== 文件处理 =====================
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "editor.rulers": [
+    100
+  ],
+  "editor.wordWrap": "off",
+  "files.associations": {
+    "any": "cpp",
+    "array": "cpp",
+    "atomic": "cpp",
+    "bit": "cpp",
+    "*.tcc": "cpp",
+    "cctype": "cpp",
+    "charconv": "cpp",
+    "chrono": "cpp",
+    "clocale": "cpp",
+    "cmath": "cpp",
+    "codecvt": "cpp",
+    "compare": "cpp",
+    "complex": "cpp",
+    "concepts": "cpp",
+    "condition_variable": "cpp",
+    "coroutine": "cpp",
+    "csignal": "cpp",
+    "cstdarg": "cpp",
+    "cstddef": "cpp",
+    "cstdint": "cpp",
+    "cstdio": "cpp",
+    "cstdlib": "cpp",
+    "cstring": "cpp",
+    "ctime": "cpp",
+    "cwchar": "cpp",
+    "cwctype": "cpp",
+    "deque": "cpp",
+    "list": "cpp",
+    "map": "cpp",
+    "string": "cpp",
+    "unordered_map": "cpp",
+    "vector": "cpp",
+    "exception": "cpp",
+    "algorithm": "cpp",
+    "functional": "cpp",
+    "iterator": "cpp",
+    "memory": "cpp",
+    "memory_resource": "cpp",
+    "numeric": "cpp",
+    "optional": "cpp",
+    "random": "cpp",
+    "ratio": "cpp",
+    "source_location": "cpp",
+    "string_view": "cpp",
+    "system_error": "cpp",
+    "tuple": "cpp",
+    "type_traits": "cpp",
+    "utility": "cpp",
+    "format": "cpp",
+    "future": "cpp",
+    "initializer_list": "cpp",
+    "iomanip": "cpp",
+    "iosfwd": "cpp",
+    "iostream": "cpp",
+    "istream": "cpp",
+    "limits": "cpp",
+    "mutex": "cpp",
+    "new": "cpp",
+    "numbers": "cpp",
+    "ostream": "cpp",
+    "semaphore": "cpp",
+    "shared_mutex": "cpp",
+    "span": "cpp",
+    "sstream": "cpp",
+    "stdexcept": "cpp",
+    "stdfloat": "cpp",
+    "stop_token": "cpp",
+    "streambuf": "cpp",
+    "thread": "cpp",
+    "cinttypes": "cpp",
+    "typeindex": "cpp",
+    "typeinfo": "cpp",
+    "variant": "cpp",
+    "*.ipp": "cpp",
+    "expected": "cpp"
+  }
 }

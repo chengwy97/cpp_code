@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 3.10)
+
+# 获取父命名空间和当前目录名称作为可执行名一部分
+get_filename_component(CUR_NAME ${CMAKE_CURRENT_LIST_DIR} NAME)
+set(EXECUTABLE_NAME "${NAMESPACE}_${CUR_NAME}")
+
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 获取所有的源文件
+file(GLOB_RECURSE SOURCE_FILES "*.cpp")
+
+find_package(absl REQUIRED)
+
+add_executable(${EXECUTABLE_NAME} ${SOURCE_FILES})
+target_link_libraries(${EXECUTABLE_NAME} PRIVATE utils::logging)
+target_link_libraries(${EXECUTABLE_NAME} PRIVATE absl::strings absl::status)

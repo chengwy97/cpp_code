@@ -20,6 +20,7 @@ using boost::asio::detached;
 using boost::asio::dynamic_buffer;
 using boost::asio::io_context;
 using boost::asio::steady_timer;
+using boost::asio::use_awaitable;
 using boost::asio::experimental::channel;
 using boost::asio::ip::tcp;
 using namespace boost::asio::buffer_literals;
@@ -76,7 +77,8 @@ class line_based_echo_session : public std::enable_shared_from_this<line_based_e
             for (;;) {
                 // Read an entire line from the client.
                 std::size_t length =
-                    co_await async_read_until(socket_, dynamic_buffer(data, max_line_length), '\n');
+                    co_await async_read_until(socket_, dynamic_buffer(data, max_line_length), '\n',
+                                              use_awaitable);
 
                 // Claim the write lock by sending a message to the channel. Since the
                 // channel signature is void(), there are no arguments to send in the
@@ -84,12 +86,12 @@ class line_based_echo_session : public std::enable_shared_from_this<line_based_e
                 // where the lock is not held by the other actor, by first trying a
                 // non-blocking send.
                 if (!write_lock_.try_send()) {
-                    co_await write_lock_.async_send();
+                    co_await write_lock_.async_send(use_awaitable);
                 }
 
                 // Respond to the client with a message, echoing the line they sent.
-                co_await async_write(socket_, "<line>"_buf);
-                co_await async_write(socket_, dynamic_buffer(data, length));
+                co_await async_write(socket_, "<line>"_buf, use_awaitable);
+                co_await async_write(socket_, dynamic_buffer(data, length), use_awaitable);
 
                 // Release the lock by receiving the message back again.
                 write_lock_.try_receive([](auto...) {});
@@ -105,7 +107,7 @@ class line_based_echo_session : public std::enable_shared_from_this<line_based_e
             for (;;) {
                 // Wait one second before trying to send the next heartbeat.
                 timer.expires_after(1s);
-                co_await timer.async_wait();
+                co_await timer.async_wait(use_awaitable);
 
                 // Claim the write lock by sending a message to the channel. Since the
                 // channel signature is void(), there are no arguments to send in the
@@ -113,7 +115,7 @@ class line_based_echo_session : public std::enable_shared_from_this<line_based_e
                 // where the lock is not held by the other actor, by first trying a
                 // non-blocking send.
                 if (!write_lock_.try_send()) {
-                    co_await write_lock_.async_send();
+                    co_await write_lock_.async_send(use_awaitable);
                 }
 
                 // Send a heartbeat to the client. As the content of the heartbeat
@@ -121,7 +123,7 @@ class line_based_echo_session : public std::enable_shared_from_this<line_based_e
                 // bytes of the message. The memory associated with a buffer literal is
                 // valid for the lifetime of the program, which mean that the buffer
                 // can be safely passed as-is to the asynchronous operation.
-                co_await async_write(socket_, "<heartbeat>\n"_buf);
+                co_await async_write(socket_, "<heartbeat>\n"_buf, use_awaitable);
 
                 // Release the lock by receiving the message back again.
                 write_lock_.try_receive([](auto...) {});
@@ -134,7 +136,7 @@ class line_based_echo_session : public std::enable_shared_from_this<line_based_e
 
 awaitable<void> listen(tcp::acceptor& acceptor) {
     for (;;) {
-        auto [e, socket] = co_await acceptor.async_accept(as_tuple);
+        auto [e, socket] = co_await acceptor.async_accept(as_tuple(use_awaitable));
         if (!e) {
             std::make_shared<line_based_echo_session>(std::move(socket))->start();
         }

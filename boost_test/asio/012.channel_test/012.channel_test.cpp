@@ -20,6 +20,7 @@ using boost::asio::detached;
 using boost::asio::dynamic_buffer;
 using boost::asio::io_context;
 using boost::asio::steady_timer;
+using boost::asio::use_awaitable;
 using boost::asio::experimental::channel;
 using boost::asio::ip::tcp;
 using namespace boost::asio::buffer_literals;
@@ -36,7 +37,7 @@ std::atomic_int counter = 0;
 awaitable<void> channel_send(int index) {
     boost::asio::steady_timer timer(co_await boost::asio::this_coro::executor);
     timer.expires_after(std::chrono::milliseconds(rand() % 100));
-    co_await timer.async_wait();
+    co_await timer.async_wait(use_awaitable);
 
     channel_receive_result[index][0] = true;
     co_await channel_ptr->async_send({}, 1, boost::asio::use_awaitable);

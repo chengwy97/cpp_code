@@ -10,3 +10,6 @@ CheckOptions:
   - key: cppcoreguidelines-owning-memory.OwnerNamespace
     value: 'gsl'
 
+ExtraArgs:
+  - -std=c++20
+  - -I/usr/local/boost/1.89.0/include

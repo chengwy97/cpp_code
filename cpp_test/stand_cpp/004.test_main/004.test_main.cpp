@@ -1,19 +1,19 @@
-#include "version/version.hpp"
-
 #include <iostream>
-#include <variant>
-#include <string>
 #include <stdexcept>
+#include <string>
 #include <string_view>
 #include <thread>
+#include <variant>
+
+#include "version/version.hpp"
 
 struct Test {
-    int a;
-    double b;
+    int         a;
+    double      b;
     std::string c;
 };
 
-int main(int argc, char* argv[]) {
+int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[]) {
     std::cout << "Git commit ID: " << GIT_COMMIT_ID << std::endl;
     std::cout << "Build time: " << BUILD_TIME << std::endl;
 

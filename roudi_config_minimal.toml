@@ -1,0 +1,19 @@
+# Minimal RouDi config for demos/tests in constrained environments.
+# Total user segment ≈ 128*200 + 1024*100 + 16384*10 = ~0.3 MB
+# Management segment ≈ 35 MB  →  total ≈ 35 MB < 64 MB /dev/shm
+[general]
+version = 1
+
+[[segment]]
+
+[[segment.mempool]]
+size = 128
+count = 200
+
+[[segment.mempool]]
+size = 1024
+count = 100
+
+[[segment.mempool]]
+size = 16384
+count = 10

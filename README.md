@@ -16,6 +16,7 @@ sudo ldconfig
 ``` bash
 sudo apt install clang-format cmake-format clangd-18
 pip install black autopep8 yapf
+sudo apt-get install libabsl-dev
 ```
 
 

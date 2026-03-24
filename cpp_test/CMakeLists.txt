@@ -7,3 +7,4 @@ set(PROJECT_NAMESPACE ${NAMESPACE})
 
 add_subdirectory(stand_cpp)
 add_subdirectory(test_static_lib)
+add_subdirectory(iceoryx)

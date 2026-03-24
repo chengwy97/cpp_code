@@ -29,10 +29,11 @@ class NoDestructor {
    public:
     template <typename... Args>
     explicit NoDestructor(Args&&... args)
-        requires std::constructible_from<T, Args...> &&
-                 (sizeof(NoDestructor<T>::ptr_) >= sizeof(T)) &&
-                 (alignof(T) <= alignof(NoDestructor<T>::ptr_))
+        requires std::constructible_from<T, Args...>
     {
+        static_assert(sizeof(ptr_) >= sizeof(T), "Storage size must be at least sizeof(T)");
+        static_assert(alignof(decltype(*this)) >= alignof(T),
+                      "Storage alignment must be at least alignof(T)");
         std::cout << "NoDestructor constructor: type -> " << typeid(T).name() << std::endl;
 
         new (ptr_) T(std::forward<Args>(args)...);

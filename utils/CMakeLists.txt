@@ -13,3 +13,4 @@ set(NAMESPACE
 add_subdirectory(logging)
 add_subdirectory(log_struct)
 add_subdirectory(filesystem_wrapper)
+# add_subdirectory(thread_pool)

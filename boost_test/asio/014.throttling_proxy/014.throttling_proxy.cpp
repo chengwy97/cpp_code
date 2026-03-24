@@ -20,6 +20,7 @@ using boost::asio::co_spawn;
 using boost::asio::detached;
 using boost::asio::io_context;
 using boost::asio::steady_timer;
+using boost::asio::use_awaitable;
 using boost::asio::experimental::channel;
 using boost::asio::ip::tcp;
 namespace this_coro = boost::asio::this_coro;
@@ -32,21 +33,22 @@ awaitable<void> produce_tokens(std::size_t bytes_per_token, steady_timer::durati
                                token_channel& tokens) {
     steady_timer timer(co_await this_coro::executor);
     for (;;) {
-        co_await tokens.async_send(boost::system::error_code{}, bytes_per_token);
+        co_await tokens.async_send(boost::system::error_code{}, bytes_per_token, use_awaitable);
 
         timer.expires_after(token_interval);
-        co_await timer.async_wait();
+        co_await timer.async_wait(use_awaitable);
     }
 }
 
 awaitable<void> transfer(tcp::socket& from, tcp::socket& to, token_channel& tokens) {
     std::array<unsigned char, 4096> data;
     for (;;) {
-        std::size_t bytes_available = co_await tokens.async_receive();
+        std::size_t bytes_available = co_await tokens.async_receive(use_awaitable);
         while (bytes_available > 0) {
-            std::size_t n = co_await from.async_read_some(buffer(data, bytes_available));
+            std::size_t n = co_await from.async_read_some(buffer(data, bytes_available),
+                                                          use_awaitable);
 
-            co_await async_write(to, buffer(data, n));
+            co_await async_write(to, buffer(data, n), use_awaitable);
 
             bytes_available -= n;
         }
@@ -63,7 +65,7 @@ awaitable<void> proxy(tcp::socket client, tcp::endpoint target) {
     token_channel client_tokens(ex, number_of_tokens);
     token_channel server_tokens(ex, number_of_tokens);
 
-    co_await server.async_connect(target);
+    co_await server.async_connect(target, use_awaitable);
     co_await (produce_tokens(bytes_per_token, token_interval, client_tokens) &&
               transfer(client, server, client_tokens) &&
               produce_tokens(bytes_per_token, token_interval, server_tokens) &&
@@ -72,7 +74,7 @@ awaitable<void> proxy(tcp::socket client, tcp::endpoint target) {
 
 awaitable<void> listen(tcp::acceptor& acceptor, tcp::endpoint target) {
     for (;;) {
-        auto [e, client] = co_await acceptor.async_accept(as_tuple);
+        auto [e, client] = co_await acceptor.async_accept(as_tuple(use_awaitable));
         if (!e) {
             auto ex = client.get_executor();
             co_spawn(ex, proxy(std::move(client), target), detached);
@@ -80,7 +82,7 @@ awaitable<void> listen(tcp::acceptor& acceptor, tcp::endpoint target) {
             std::cerr << "Accept failed: " << e.message() << "\n";
             steady_timer timer(co_await this_coro::executor);
             timer.expires_after(100ms);
-            co_await timer.async_wait();
+            co_await timer.async_wait(use_awaitable);
         }
     }
 }
