@@ -70,6 +70,16 @@ CPMAddPackage(
 )
 # 如果需要具体 tag（如 v1.0.0），VERSION 应写成 1.0.0，让 CPM 自动加 v；若 tag 不带 v，需用 GIT_TAG 手动指定完整 tag。
 
+CPMAddPackage(
+    NAME CLI11
+    GITHUB_REPOSITORY CLIUtils/CLI11
+    VERSION 2.3.2
+    OPTIONS
+        "CLI11_BUILD_EXAMPLES OFF"
+        "CLI11_BUILD_TESTS OFF"
+        "CLI11_BUILD_DOCS OFF"
+)
+
 
 include_directories(${CMAKE_BINARY_DIR}/generated)
 
